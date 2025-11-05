@@ -1,0 +1,24 @@
+﻿Python cache
+pycache/
+*.pyc
+*.pyo
+*.pyd
+Jupyter checkpoints
+.ipynb_checkpoints
+虚拟环境 (Virtual environment)
+.venv/
+venv/
+ENV/
+env/
+C-MAPSS 数据文件 (用户必须自行下载)
+这样做可以保持仓库轻量
+data/CMaps/.txt
+data/CMaps/.pdf
+data/CMaps/x.txt
+已保存的模型和归一化器 (这些是训练的产物)
+我们保留 .png 图像来展示结果，但忽略二进制文件
+saved_models/.pth
+saved_models/.pkl
+操作系统特定的文件
+.DS_Store
+Thumbs.db
