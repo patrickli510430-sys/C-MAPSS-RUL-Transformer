@@ -34,27 +34,28 @@ graph TD
 
     %% 数据阶段
     subgraph Data Pipeline [数据处理流水线]
-        A["NASA C-MAPSS 数据集\n(FD001 - FD004)"]:::data --> B("RUL 标签生成\nPiecewise Linear Model");
-        B --> C("特征选择\nVariance Filtering");
+        %% 注意这里使用了 <br>
+        A["NASA C-MAPSS 数据集<br>(FD001 - FD004)"]:::data --> B("RUL 标签生成<br>Piecewise Linear Model");
+        B --> C("特征选择<br>Variance Filtering");
         C --> D{工况归一化策略};
         D -- "单工况 FD001/003" --> D1("Global MinMax Scaler"):::process;
-        D -- "多工况 FD002/004" --> D2("Multi-OC Scaler\n分工况聚类归一化"):::process;
-        D1 --> E["滑动时间窗切片\nSliding Window Sequence"]:::data;
+        D -- "多工况 FD002/004" --> D2("Multi-OC Scaler<br>分工况聚类归一化"):::process;
+        D1 --> E["滑动时间窗切片<br>Sliding Window Sequence"]:::data;
         D2 --> E;
     end
 
     %% 模型阶段
     subgraph Transformer Architecture [Conv1D-Transformer 模型]
-        E --> F("Conv1D 层\n局部特征提取 & 降噪"):::model;
-        F --> G("Transformer Encoder\n自注意力机制 & 全局依赖"):::model;
+        E --> F("Conv1D 层<br>局部特征提取 & 降噪"):::model;
+        F --> G("Transformer Encoder<br>自注意力机制 & 全局依赖"):::model;
         G --> H("Global Mean Pooling"):::model;
-        H --> I("MLP 回归头\nRegression Head"):::model;
+        H --> I("MLP 回归头<br>Regression Head"):::model;
     end
 
     %% 输出阶段
     subgraph Output [预测与评估]
         I --> J["RUL 预测值"]:::output;
-        J --> K("性能评估\nRMSE & Score"):::output;
+        J --> K("性能评估<br>RMSE & Score"):::output;
     end
 
     %% 连接线
