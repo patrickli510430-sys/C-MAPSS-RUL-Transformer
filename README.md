@@ -165,3 +165,51 @@ python evaluate.py --dataset FD001
 使用 predict.py 加载模型，对一个（模拟的）新数据样本进行预测。
 
 python predict.py --dataset FD001
+📖 项目简介 (Overview)本项目旨在利用深度学习技术解决工业领域的关键问题——预测设备的剩余使用寿命（RUL）。我们专注于 NASA C-MAPSS (Commercial Modular Aero-Propulsion System Simulation) 涡扇发动机退化仿真数据集。准确的 RUL 预测对于实现预测性维护（Predictive Maintenance）至关重要，它可以帮助减少意外停机时间、降低维护成本并提高航空安全性。目前，该项目采用了一种混合模型架构，结合了 卷积神经网络 (CNN) 和 长短期记忆网络 (LSTM)。CNN 用于从多传感器数据中自动提取空间特征，而 LSTM 则擅长捕捉时间序列数据中的长期依赖关系和退化趋势。⚙️ 系统流程图 (System Workflow)下图展示了从原始数据输入到最终 RUL 预测的完整处理流程。代码段graph TD
+    %% 定义样式
+    classDef data fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b;
+    classDef process fill:#fff3e0,stroke:#ff9800,stroke-width:2px,color:#e65100;
+    classDef model fill:#e8f5e9,stroke:#43a047,stroke-width:2px,color:#1b5e20;
+    classDef output fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#880e4f;
+
+    %% 数据准备阶段
+    subgraph Data Preparation
+        A[原始 C-MAPSS 数据集\n(FD001-FD004)]:::data --> B(数据清洗与探索性分析);
+        B --> C(特征选择与工程);
+        C --> D(数据标准化/归一化);
+        D --> E[滑动时间窗切片\n(Sliding Window)];
+    end
+
+    %% 模型构建阶段
+    subgraph Hybrid Model Architecture
+        E --> F(CNN 层\n特征提取):::model;
+        F --> G(LSTM 层\n时序建模):::model;
+        G --> H(全连接层/Dense Layer):::model;
+    end
+
+    %% 训练与评估阶段
+    subgraph Training & Eval
+        H --> I{训练/推理?};
+        I -- Training --> J(计算 Loss & 优化器更新);
+        I -- Inference --> K(加载预训练权重\nmodel_weights.pth);
+        J --> H;
+        K --> H;
+    end
+
+    %% 输出阶段
+    H --> L[最终 RUL 预测值]:::output;
+    L --> M(性能评估\nRMSE, Score):::output;
+
+    %% 连接线样式
+    linkStyle default stroke:#607d8b,stroke-width:1px;
+📂 项目结构 (Project Structure)项目的核心文件组织结构如下：BashC-MAPSS_RUL_Project/
+├── CMAPSSData/          # [必要] 存放 NASA C-MAPSS 原始数据集的文件夹
+├── C-MAPSS.ipynb        # [核心] 主 Jupyter Notebook，包含数据处理、模型训练和评估代码
+├── model_weights.pth    # [产出] 训练好的模型权重文件
+├── README.md            # 项目说明文档
+└── requirements.txt     # (建议添加) 项目依赖包列表
+🛠️ 环境依赖 (Prerequisites)为了顺利运行本项目，请确保您的环境满足以下依赖库版本要求。PackageVersion Requirement用途python3.8+ (Recommended)编程语言numpy1.24.3数值计算与数组操作pandas2.0.3数据处理与分析matplotlib3.7.2数据可视化torch (PyTorch)2.0.1深度学习框架 (后端)scikit-learn1.3.0数据预处理与评估指标建议: 强烈建议使用 conda 或 venv 创建独立的虚拟环境来管理这些依赖。🚀 快速开始 (Getting Started)1. 克隆项目Bashgit clone https://github.com/yourusername/C-MAPSS_RUL_Project.git
+cd C-MAPSS_RUL_Project
+2. 准备数据确保您已下载 NASA C-MAPSS 数据集，并将相关 txt 文件解压到项目根目录下的 CMAPSSData/ 文件夹中。3. 安装依赖如果项目包含 requirements.txt (推荐创建)，运行：Bashpip install -r requirements.txt
+否则，请手动安装上述列出的指定版本依赖。4. 运行代码使用 Jupyter Notebook 或 JupyterLab 打开主文件：Bashjupyter notebook C-MAPSS.ipynb
+按照 Notebook 中的单元格顺序逐步执行，即可完成数据加载、预处理、模型训练及评估。5. 使用预训练模型如果您想跳过训练过程，直接使用已保存的权重进行推理，请确保 model_weights.pth 文件存在，并在 Notebook 中执行加载权重的相关代码段。🧠 模型与方法 (Model Methodology)当前实现采用 CNN-LSTM 混合架构：CNN (一维卷积): 沿传感器维度滑动，捕捉不同传感器读数之间的局部空间相关性，提取鲁棒的特征。LSTM: 处理 CNN 提取的特征序列，学习时间维度上的长期退化模式。🗺️ 路线图与未来展望 (Roadmap)项目的后续开发计划如下：[x] 完成基础数据预处理流程（滑动窗口、标准化）。[x] 实现并验证 CNN-LSTM 基准模型。[ ] 探索 Transformer 架构: 利用自注意力机制（Self-Attention）捕捉更长距离的依赖关系，尝试提升预测精度。[ ] 研究图神经网络 (GNN): 将传感器网络建模为图结构，探索传感器节点间的复杂拓扑关系对 RUL 的影响。[ ] 完善模型评估部分，增加更多可视化图表（如预测值 vs 真实值对比图）。🤝 贡献 (Contributing)欢迎任何形式的贡献！如果您有改进建议、发现了 Bug，或者想添加新的模型实现（如 Transformer/GNN），请随时提交 Pull Request 或创建 Issue。📄 许可证 (License)
